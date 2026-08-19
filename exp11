@@ -1,0 +1,66 @@
+#include <stdio.h>
+
+int n;
+int eclosure[20][20];
+int visited[20];
+
+void findClosure(int state)
+{
+    int i;
+
+    visited[state] = 1;
+    eclosure[state][state] = 1;
+
+    for (i = 0; i < n; i++)
+    {
+        if (eclosure[state][i] == 1 && visited[i] == 0)
+        {
+            findClosure(i);
+        }
+    }
+}
+
+int main()
+{
+    int i, j, e, from, to;
+
+    printf("Enter number of states: ");
+    scanf("%d", &n);
+
+    /* Initialize */
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            eclosure[i][j] = 0;
+
+    printf("Enter number of epsilon transitions: ");
+    scanf("%d", &e);
+
+    printf("Enter epsilon transitions (from to):\n");
+
+    for (i = 0; i < e; i++)
+    {
+        scanf("%d %d", &from, &to);
+        eclosure[from][to] = 1;
+    }
+
+    /* Find epsilon closure for every state */
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+            visited[j] = 0;
+
+        findClosure(i);
+
+        printf("Epsilon-closure(q%d) = { ", i);
+
+        for (j = 0; j < n; j++)
+        {
+            if (eclosure[i][j] == 1 && visited[j] == 1)
+                printf("q%d ", j);
+        }
+
+        printf("}\n");
+    }
+
+    return 0;
+}
